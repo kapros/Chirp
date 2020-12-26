@@ -9,6 +9,7 @@ using Chirp.Contracts.V1.Requests;
 using Chirp.Contracts.V1.Responses;
 using Chirp.Domain;
 using Chirp.Extensions;
+using Chirp.Helpers;
 using Chirp.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -25,20 +26,30 @@ namespace Chirp.Controllers.V1
     {
         private readonly IPostService _postService;
         private readonly IMapper _mapper;
+        private readonly IUriService _uriService;
 
-        public TagsController(IPostService postService, IMapper mapper)
+        public TagsController(IPostService postService, IMapper mapper, IUriService uriService)
         {
             _postService = postService;
             _mapper = mapper;
+            _uriService = uriService;
         }
 
         [HttpGet(ApiRoutes.Tags.TagsRoot)]
         [Authorize(Policy = "TagViewer")]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] PaginationQuery paginationQuery)
         {
+            var pagination = _mapper.Map<PaginationFilter>(paginationQuery);
+
             var tags = await _postService.GetAllTagsAsync();
             var tagsResponses = _mapper.Map<List<TagResponse>>(tags);
-            return Ok(new PagedResponse<TagResponse>(tagsResponses));
+
+            if (pagination == null || pagination.PageNumber < 1 || pagination.PageSize < 1)
+                return Ok(new PagedResponse<TagResponse>(tagsResponses));
+
+            var paginationResponse = PaginationHelpers.CreatePaginatedResponse(_uriService, pagination, tagsResponses);
+
+            return Ok(paginationResponse);
         }
 
         [HttpGet(ApiRoutes.Tags.GetByName)]
@@ -73,9 +84,7 @@ namespace Chirp.Controllers.V1
             if (!created)
                 return BadRequest(new ErrorResponse { Errors = new List<ErrorModel> { new ErrorModel { Message = "Failed to created tag" } } });
 
-            var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
-            var locationUrl = baseUrl + "/" + ApiRoutes.Tags.GetByName.Replace("{tagName}", newTag.Name);
-
+            var locationUrl = _uriService.UriForGet(newTag.Name);
             return Created(locationUrl, new Response<TagResponse>(_mapper.Map<TagResponse>(newTag)));
         }
 
