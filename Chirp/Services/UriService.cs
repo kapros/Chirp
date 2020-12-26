@@ -17,7 +17,12 @@ namespace Chirp.Services
             _baseUri = baseUri;
         }
 
-        public Uri GetAllPostsUri(PaginationQuery paginationQuery = null)
+        public Uri UriForGet(object resourceId)
+        {
+            return new Uri(_baseUri + "/" + resourceId.ToString());
+        }
+
+        public Uri UriForGetAll(PaginationQuery paginationQuery = null)
         {
             var uri = new Uri(_baseUri);
 
@@ -28,11 +33,6 @@ namespace Chirp.Services
             modifiedUri = QueryHelpers.AddQueryString(modifiedUri, "pageSize", paginationQuery.PageSize.ToString());
 
             return new Uri(modifiedUri);
-        }
-
-        public Uri GetPostUri(Guid postId)
-        {
-            return new Uri(_baseUri + ApiRoutes.Posts.GetById.Replace("{postId}", postId.ToString()));
         }
     }
 }

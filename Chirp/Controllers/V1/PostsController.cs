@@ -79,7 +79,7 @@ namespace Chirp.Controllers.V1
 
             await _postService.CreatePostAsync(post);
 
-            var locationUrl = _uriService.GetPostUri(post.Id);
+            var locationUrl = _uriService.UriForGet(post.Id);
 
             return Created(locationUrl, new Response<PostResponse>(_mapper.Map<PostResponse>(post)));
         }

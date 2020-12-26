@@ -13,9 +13,9 @@ namespace Chirp.Helpers
     {
         public static PagedResponse<T> CreatePaginatedResponse<T>(IUriService uriService, PaginationFilter pagination, IEnumerable<T> response)
         {
-            var nextPage = pagination.PageNumber >= 1 ? uriService.GetAllPostsUri(new PaginationQuery(pagination.PageNumber + 1, pagination.PageSize)).ToString() : null;
+            var nextPage = pagination.PageNumber >= 1 ? uriService.UriForGetAll(new PaginationQuery(pagination.PageNumber + 1, pagination.PageSize)).ToString() : null;
 
-            var previousPage = pagination.PageNumber - 1 >= 1 ? uriService.GetAllPostsUri(new PaginationQuery(pagination.PageNumber - 1, pagination.PageSize)).ToString() : null;
+            var previousPage = pagination.PageNumber - 1 >= 1 ? uriService.UriForGetAll(new PaginationQuery(pagination.PageNumber - 1, pagination.PageSize)).ToString() : null;
 
             return new PagedResponse<T>
             {

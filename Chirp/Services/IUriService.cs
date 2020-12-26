@@ -8,8 +8,14 @@ namespace Chirp.Services
 {
     public interface IUriService
     {
-        Uri GetPostUri(Guid postId);
+        /// <summary>
+        /// Appends the resource ID to the current URI.
+        /// </summary>
+        Uri UriForGet(object resourceId);
 
-        Uri GetAllPostsUri(PaginationQuery paginationQuery = null);
+        /// <summary>
+        /// Adds pagination query parameters to the current URI.
+        /// </summary>
+        Uri UriForGetAll(PaginationQuery paginationQuery = null);
     }
 }

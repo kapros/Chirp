@@ -30,7 +30,7 @@ namespace Chirp.Setup
             {
                 var accessor = provider.GetRequiredService<IHttpContextAccessor>();
                 var request = accessor.HttpContext.Request;
-                var absoluteUri = string.Concat(request.Scheme, "://", request.Host.ToUriComponent(), "/");
+                var absoluteUri = string.Concat(request.Scheme, "://", request.Host.ToUriComponent(), request.Path);
                 return new UriService(absoluteUri);
             });
 
