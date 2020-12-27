@@ -37,7 +37,7 @@ namespace Chirp.Services
         {
             var existingUser = await _userManager.FindByEmailAsync(email);
 
-            if (existingUser != null)
+            if (existingUser == null)
                 return new AuthenticationResult { Errors = new[] { "User does not exist" } };
 
             var userHasValidPassword = await _userManager.CheckPasswordAsync(existingUser, password);
