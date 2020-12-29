@@ -17,6 +17,7 @@ using Chirp.Setup;
 using Chirp.Healthchecks;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using AutoMapper;
 
 namespace Chirp
 {
@@ -33,6 +34,7 @@ namespace Chirp
         public void ConfigureServices(IServiceCollection services)
         {
             services.RunAllInstallers(Configuration);
+            services.AddAutoMapper(typeof(Startup));
         }
         //https://docs.microsoft.com/pl-pl/aspnet/core/fundamentals/configuration/?view=aspnetcore-5.0
 
