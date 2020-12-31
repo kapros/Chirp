@@ -17,6 +17,7 @@ using Chirp.Setup;
 using Chirp.Healthchecks;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using MediatR;
 using AutoMapper;
 
 namespace Chirp
@@ -35,6 +36,7 @@ namespace Chirp
         {
             services.RunAllInstallers(Configuration);
             services.AddAutoMapper(typeof(Startup));
+            services.AddMediatR(typeof(Startup));
         }
         //https://docs.microsoft.com/pl-pl/aspnet/core/fundamentals/configuration/?view=aspnetcore-5.0
 
