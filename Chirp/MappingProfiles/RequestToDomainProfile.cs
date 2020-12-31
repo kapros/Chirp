@@ -14,7 +14,7 @@ namespace Chirp.MappingProfiles
         public RequestToDomainProfile()
         {
             CreateMap<PaginationQuery, PaginationFilter>();
-            CreateMap<GetAllPostsQuery, GetAllPostsFilter>();
+            CreateMap<GetAllPostsFilterQuery, GetAllPostsFilter>();
         }
     }
 }
