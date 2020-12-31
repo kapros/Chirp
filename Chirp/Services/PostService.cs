@@ -33,7 +33,7 @@ namespace Chirp.Services
 
         public async Task<bool> DeletePostAsync(Guid id)
         {
-            var post = await GetPostbyIdAsync(id);
+            var post = await GetPostByIdAsync(id);
 
             if (post == null)
                 return false;
@@ -61,7 +61,7 @@ namespace Chirp.Services
             return tags;
         }
 
-        public async Task<Post> GetPostbyIdAsync(Guid id)
+        public async Task<Post> GetPostByIdAsync(Guid id)
         {
             return await _context.Posts.SingleOrDefaultAsync(x => x.Id == id);
         }

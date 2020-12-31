@@ -10,7 +10,7 @@ namespace Chirp.Services
     {
         Task<IList<Post>> GetPostsAsync(GetAllPostsFilter filters = null, PaginationFilter paginationFilter = null);
 
-        Task<Post> GetPostbyIdAsync(Guid id);
+        Task<Post> GetPostByIdAsync(Guid id);
 
         Task<bool> UpdatePostAsync(Post postToupdate);
 
