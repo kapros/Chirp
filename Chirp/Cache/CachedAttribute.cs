@@ -31,8 +31,6 @@ namespace Chirp.Cache
                 return;
             }
 
-            await next();
-
             var cacheService = context.HttpContext.RequestServices.GetRequiredService<IResponseCacheService>();
 
             var cacheKey = GenerateCacheKeyFromRequest(context.HttpContext.Request);
