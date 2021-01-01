@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Chirp.Commands;
 using Chirp.Contracts;
+using Chirp.Contracts.V1.Events;
 using Chirp.Contracts.V1.Responses;
 using Chirp.Data;
 using Chirp.Domain;
@@ -46,13 +47,14 @@ namespace Chirp.Handlers.CommandHandlers
                 DateStarted = DateTime.UtcNow
             });
 
-            var post = new Post
+            var post = new NewPostEventDto
             {
                 Name = request.CreatePostRequest.Name,
-                UserId = request.CreatedBy
+                UserId = request.CreatedBy,
+                Tags = request.CreatePostRequest.Tags
             };
 
-            var eventToPublish = new Event<Post>();
+            var eventToPublish = new Event<NewPostEventDto>();
             eventToPublish.EventId = request.RequestId;
             eventToPublish.Version = EventVersion;
             eventToPublish.EventName = EventName;
