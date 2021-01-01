@@ -17,6 +17,11 @@ namespace Chirp.Services
             _baseUri = baseUri;
         }
 
+        public Uri Accepted(object id)
+        {
+            return new Uri(_baseUri + "/jobs/" + id.ToString());
+        }
+
         public Uri UriForGet(object resourceId)
         {
             return new Uri(_baseUri + "/" + resourceId.ToString());

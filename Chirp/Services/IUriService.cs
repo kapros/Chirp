@@ -17,5 +17,10 @@ namespace Chirp.Services
         /// Adds pagination query parameters to the current URI.
         /// </summary>
         Uri UriForGetAll(PaginationQuery paginationQuery = null);
+
+        /// <summary>
+        /// Returns the URI the consumer should use to query for the newly created resource.
+        /// </summary>
+        Uri Accepted(object id);
     }
 }
