@@ -64,7 +64,7 @@ namespace Chirp.Services
             var message = new Message(body)
             {
                 ContentType = "application/json",
-                MessageId = Guid.NewGuid().ToString(),
+                MessageId = @event.EventId ?? Guid.NewGuid().ToString(),
                 SessionId = sessionId
             };
             return message;
