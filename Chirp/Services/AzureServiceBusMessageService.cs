@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace Chirp.Services
 {
-    public class AzureServiceBusMessageSender : IMessageQueueService
+    public class AzureServiceBusMessageService : IMessageQueueService
     {
         private readonly IQueueClient _queueClient;
 
-        public AzureServiceBusMessageSender(IQueueClient queueClient)
+        public AzureServiceBusMessageService(IQueueClient queueClient)
         {
             _queueClient = queueClient;
         }
