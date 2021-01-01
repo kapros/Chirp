@@ -9,5 +9,7 @@
         public string EventName { get; set; }
 
         public T Message { get; set; }
+
+        public string EventId { get; set; }
     }
 }
