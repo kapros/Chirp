@@ -12,7 +12,9 @@ using Chirp.Contracts.V1.Responses;
 using Chirp.Domain;
 using Chirp.Extensions;
 using Chirp.Helpers;
+using Chirp.Queries;
 using Chirp.Services;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -28,49 +30,52 @@ namespace Chirp.Controllers.V1
         private readonly IPostService _postService;
         private readonly IMapper _mapper;
         private readonly IUriService _uriService;
+        private readonly IMediator _mediator;
 
-        public PostsController(IPostService postService, IMapper mapper, IUriService uriService)
+        public PostsController(IPostService postService, IMapper mapper, IUriService uriService, IMediator mediator)
         {
             _postService = postService;
             _mapper = mapper;
             _uriService = uriService;
+            _mediator = mediator;
         }
 
         [HttpGet]
         [Cached(600)]
-        public async Task<IActionResult> GetAll([FromQuery] GetAllPostsQuery query, [FromQuery] PaginationQuery paginationQuery)
+        public async Task<IActionResult> GetAll([FromQuery] GetAllPostsFilterQuery query, [FromQuery] PaginationQuery paginationQuery)
         {
-            var pagination = _mapper.Map<PaginationFilter>(paginationQuery);
+            var paginatedQuery = new PaginatedQuery<PagedResponse<PostResponse>>
+            {
+                Pagination = paginationQuery,
+                Query = new GetAllPostsQuery
+                {
+                    Query = query
+                }
+            };
 
-            var filters = _mapper.Map<GetAllPostsFilter>(query);
+            var postsResponse = await _mediator.Send(paginatedQuery);
 
-            var posts = await _postService.GetPostsAsync(filters, pagination);
-
-            var postsResponse = _mapper.Map<List<PostResponse>>(posts);
-
-            if (pagination == null || pagination.PageNumber < 1 || pagination.PageSize < 1)
-                return Ok(new PagedResponse<PostResponse>(postsResponse));
-
-            var paginationResponse = PaginationHelpers.CreatePaginatedResponse(_uriService, pagination, postsResponse);
-
-            return Ok(paginationResponse);
+            return Ok(postsResponse);
         }
 
         [HttpGet("id")]
         public async Task<IActionResult> Get([FromRoute] Guid id)
         {
-            var post = await _postService.GetPostbyIdAsync(id);
+            var postQuery = new GetPostByIdQuery
+            {
+                PostId = id
+            };
 
-            if (post == null)
-                return NotFound();
+            var post = await _mediator.Send(postQuery);
 
-            var postResponse = _mapper.Map<PostResponse>(post);
-            return Ok(new Response<PostResponse>(postResponse));
+            return post != null ? Ok(new Response<PostResponse>(post)) : (IActionResult)NotFound();
         }
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreatePostRequest postRequest)
         {
+
+            var timestamp = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
             var post = new Post
             {
                 Name = postRequest.Name,
@@ -81,6 +86,11 @@ namespace Chirp.Controllers.V1
 
             var locationUrl = _uriService.UriForGet(post.Id);
 
+            return Accepted(new Accepted
+            {
+                Id = timestamp,
+                Address = locationUrl.ToString()
+            });
             return Created(locationUrl, new Response<PostResponse>(_mapper.Map<PostResponse>(post)));
         }
 
@@ -108,7 +118,7 @@ namespace Chirp.Controllers.V1
             if (!userOwnsPost)
                 return BadRequest(new { Error = "You do not own this post" });
 
-            var post = await _postService.GetPostbyIdAsync(id);
+            var post = await _postService.GetPostByIdAsync(id);
             post.Name = request.Name;
 
             var updated = await _postService.UpdatePostAsync(post);

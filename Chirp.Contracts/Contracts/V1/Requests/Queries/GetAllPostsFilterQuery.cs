@@ -4,8 +4,8 @@ using System.Text;
 
 namespace Chirp.Contracts.V1.Requests.Queries
 {
-    public class GetAllPostsQuery
+    public class GetAllPostsFilterQuery
     {
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
     }
 }
