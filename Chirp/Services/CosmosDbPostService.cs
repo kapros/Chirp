@@ -43,7 +43,7 @@ namespace Chirp.Services
             return true;
         }
 
-        public async Task<Post> GetPostbyIdAsync(Guid id)
+        public async Task<Post> GetPostByIdAsync(Guid id)
         {
             var db = _client.GetDatabase(DATABASE);
             var container = db.GetContainer(CONTAINERID);
@@ -80,7 +80,7 @@ namespace Chirp.Services
 
         public async Task<bool> UserOwnsPost(Guid id, string userId)
         {
-            var post = await GetPostbyIdAsync(id);
+            var post = await GetPostByIdAsync(id);
 
             if (post?.UserId == userId)
                 return true;
