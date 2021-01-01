@@ -10,10 +10,12 @@ namespace Chirp.Services
     public class ResponseCacheService : IResponseCacheService
     {
         private readonly IDistributedCache _cache;
+        private readonly ISerializationService _serializationService;
 
-        public ResponseCacheService(IDistributedCache cache)
+        public ResponseCacheService(IDistributedCache cache, ISerializationService serializationService)
         {
             _cache = cache;
+            _serializationService = serializationService;
         }
 
         public async Task CacheResponseAsync(string cacheKey, object response, TimeSpan timeToLive)
@@ -21,7 +23,7 @@ namespace Chirp.Services
             if (response == null)
                 return;
 
-            var serializedResponse = JsonConvert.SerializeObject(response);
+            var serializedResponse = await _serializationService.Serialize(response);
 
             await _cache.SetStringAsync(cacheKey, serializedResponse, new DistributedCacheEntryOptions
             {
@@ -29,11 +31,22 @@ namespace Chirp.Services
             });
         }
 
+        public async Task<T> GetCachedResponseAsync<T>(string cacheKey)
+        {
+            var cachedResponseString = await _cache.GetStringAsync(cacheKey);
+
+            var cachedResponse = await _serializationService.Deserialize<T>(cachedResponseString);
+
+            return cachedResponse;
+        }
+
         public async Task<string> GetCachedResponseAsync(string cacheKey)
         {
-            var cachedResponse = await _cache.GetStringAsync(cacheKey);
+            var cachedResponseBytes = await _cache.GetStringAsync(cacheKey);
 
-            return string.IsNullOrWhiteSpace(cachedResponse) ? null : cachedResponse;
+            var cachedResponse = await _serializationService.GetString(cachedResponseBytes);
+
+            return cachedResponse;
         }
     }
 }

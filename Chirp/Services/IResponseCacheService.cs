@@ -9,6 +9,8 @@ namespace Chirp.Services
     {
         Task CacheResponseAsync(string cacheKey, object response, TimeSpan timeToLive);
 
+        Task<T> GetCachedResponseAsync<T>(string cacheKey);
+
         Task<string> GetCachedResponseAsync(string cacheKey);
     }
 }
