@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Chirp.Cache;
+using Chirp.Commands;
 using Chirp.Contracts;
 using Chirp.Contracts.V1;
 using Chirp.Contracts.V1.Requests;
@@ -74,24 +75,21 @@ namespace Chirp.Controllers.V1
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreatePostRequest postRequest)
         {
-
-            var timestamp = DateTimeOffset.Now.ToUnixTimeMilliseconds().ToString();
             var post = new Post
             {
                 Name = postRequest.Name,
                 UserId = HttpContext.GetUserId()
             };
 
-            await _postService.CreatePostAsync(post);
-
-            var locationUrl = _uriService.UriForGet(post.Id);
-
-            return Accepted(new Accepted
+            var createPostCommand = new CreatePostCommand
             {
-                Id = timestamp,
-                Address = locationUrl.ToString()
-            });
-            return Created(locationUrl, new Response<PostResponse>(_mapper.Map<PostResponse>(post)));
+                CreatePostRequest = postRequest,
+                CreatedBy = HttpContext.GetUserId()
+            };
+
+            var createdPost = await _mediator.Send(createPostCommand);
+
+            return Accepted(createdPost);
         }
 
         /// <summary>
