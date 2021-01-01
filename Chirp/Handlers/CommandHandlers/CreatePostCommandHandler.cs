@@ -54,11 +54,13 @@ namespace Chirp.Handlers.CommandHandlers
                 Tags = request.CreatePostRequest.Tags
             };
 
-            var eventToPublish = new Event<NewPostEventDto>();
-            eventToPublish.EventId = request.RequestId;
-            eventToPublish.Version = EventVersion;
-            eventToPublish.EventName = EventName;
-            eventToPublish.Message = post;
+            var eventToPublish = new Event<NewPostEventDto>
+            {
+                EventId = request.RequestId,
+                Version = EventVersion,
+                EventName = EventName,
+                Message = post
+            };
             await _eventPublishingService.SendEvent(eventToPublish);
 
             return new Accepted
