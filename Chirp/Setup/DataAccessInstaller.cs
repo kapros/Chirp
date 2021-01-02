@@ -26,8 +26,9 @@ namespace Chirp.Setup
             options.UseSqlServer(
                 configuration.GetConnectionString("Data")));
             services.AddDbContext<AcceptedJobsContext>(options =>
-            options.UseSqlServer(
+            options.UseNpgsql(
                 configuration.GetConnectionString("AcceptedJobs")));
+
             services.AddSingleton<IPostService, PostService>();
         }
     }
