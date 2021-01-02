@@ -12,5 +12,7 @@ namespace Chirp.Services
         Task<T> GetCachedResponseAsync<T>(string cacheKey);
 
         Task<string> GetCachedResponseAsync(string cacheKey);
+
+        Task InvalidateCache(string cacheKey);
     }
 }

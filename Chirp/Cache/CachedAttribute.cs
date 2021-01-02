@@ -1,12 +1,8 @@
 ﻿using Chirp.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Chirp.Cache
@@ -14,7 +10,11 @@ namespace Chirp.Cache
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class CachedAttribute : Attribute, IAsyncActionFilter
     {
+        public const int DefaultTimeToLiveInSeconds = 600;
+
         private readonly int _timeToLiveInSeconds;
+
+        public CachedAttribute() : this(DefaultTimeToLiveInSeconds) { }
 
         public CachedAttribute(int timeToLive)
         {
@@ -33,7 +33,7 @@ namespace Chirp.Cache
 
             var cacheService = context.HttpContext.RequestServices.GetRequiredService<IResponseCacheService>();
 
-            var cacheKey = GenerateCacheKeyFromRequest(context.HttpContext.Request);
+            var cacheKey = context.HttpContext.Request.GenerateCacheKeyFromRequest();
 
             var cachedResponse = await cacheService.GetCachedResponseAsync(cacheKey);
 
@@ -55,20 +55,6 @@ namespace Chirp.Cache
             {
                 await cacheService.CacheResponseAsync(cacheKey, ok.Value, TimeSpan.FromSeconds(_timeToLiveInSeconds));
             }
-        }
-
-        private static string GenerateCacheKeyFromRequest(HttpRequest request)
-        {
-            var keyBuilder = new StringBuilder();
-
-            keyBuilder.Append(request.Path);
-
-            foreach (var (key, value) in request.Query.OrderBy(x => x.Key))
-            {
-                keyBuilder.Append($"|{key}-{value}");
-            }
-
-            return keyBuilder.ToString();
         }
     }
 }

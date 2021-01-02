@@ -48,5 +48,10 @@ namespace Chirp.Services
 
             return cachedResponse;
         }
+
+        public async Task InvalidateCache(string cacheKey)
+        {
+            await _cache.RemoveAsync(cacheKey);
+        }
     }
 }
