@@ -19,6 +19,9 @@ using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using MediatR;
 using AutoMapper;
+using Chirp.Domain;
+using Chirp.Extensions;
+using Chirp.Services;
 
 namespace Chirp
 {
@@ -41,7 +44,7 @@ namespace Chirp
         //https://docs.microsoft.com/pl-pl/aspnet/core/fundamentals/configuration/?view=aspnetcore-5.0
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceCollection services)
         {
             if (env.IsDevelopment())
             {
@@ -93,7 +96,19 @@ namespace Chirp
             app.UseStaticFiles();
 
             app.UseAuthentication();
-
+            services.AddSingleton<IUriService>(provider =>
+            {
+                var accessor = provider.GetRequiredService<IHttpContextAccessor>();
+                var request = accessor.HttpContext.Request;
+                var absoluteUri = string.Concat(request.Scheme, "://", request.Host.ToUriComponent(), request.Path);
+                return new UriService(absoluteUri);
+            });
+            services.AddSingleton(provider =>
+            {
+                var accessor = provider.GetRequiredService<IHttpContextAccessor>();
+                var userId = accessor.HttpContext.GetUserId();
+                return new UserId(Guid.Parse(userId));
+            });
             //app.UseEndpoints(endpoints =>
             //{
             //    endpoints.MapControllers();
