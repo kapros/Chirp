@@ -101,7 +101,7 @@ namespace Chirp
                 var accessor = provider.GetRequiredService<IHttpContextAccessor>();
                 var request = accessor.HttpContext.Request;
                 var absoluteUri = string.Concat(request.Scheme, "://", request.Host.ToUriComponent(), request.Path);
-                return new UriService(absoluteUri);
+                return new UriService(new Uri(absoluteUri));
             });
             services.AddSingleton(provider =>
             {

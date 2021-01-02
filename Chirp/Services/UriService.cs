@@ -10,16 +10,19 @@ namespace Chirp.Services
 {
     public class UriService : IUriService
     {
-        private readonly string _baseUri;
+        private readonly Uri _baseUri;
 
-        public UriService(string baseUri)
+        private string GetHost() =>
+                 string.Concat(_baseUri.Scheme, "://", _baseUri.Authority);
+
+        public UriService(Uri baseUri)
         {
             _baseUri = baseUri;
         }
 
         public Uri Accepted(object id)
         {
-            return new Uri(_baseUri + "/jobs/" + id.ToString());
+            return new Uri(GetHost() + "/api/jobs/" + id.ToString());
         }
 
         public Uri UriForGet(object resourceId)
@@ -29,12 +32,10 @@ namespace Chirp.Services
 
         public Uri UriForGetAll(PaginationQuery paginationQuery = null)
         {
-            var uri = new Uri(_baseUri);
-
             if (paginationQuery == null)
-                return uri;
+                return _baseUri;
 
-            var modifiedUri = QueryHelpers.AddQueryString(_baseUri, "pageNumber", paginationQuery.PageNumber.ToString());
+            var modifiedUri = QueryHelpers.AddQueryString(_baseUri.AbsoluteUri, "pageNumber", paginationQuery.PageNumber.ToString());
             modifiedUri = QueryHelpers.AddQueryString(modifiedUri, "pageSize", paginationQuery.PageSize.ToString());
 
             return new Uri(modifiedUri);
