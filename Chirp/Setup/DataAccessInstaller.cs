@@ -1,6 +1,7 @@
 ﻿using Chirp.Data;
 using Chirp.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,13 +16,18 @@ namespace Chirp.Setup
     {
         public void InstallServices(IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<DataContext>(options =>
+            services.AddDbContext<IdentityDbContext>(options =>
             options.UseSqlServer(
-                configuration.GetConnectionString("DefaultConnection")));
+                configuration.GetConnectionString("Identity")));
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<DataContext>();
-
+                .AddEntityFrameworkStores<IdentityDbContext>();
+            services.AddDbContext<DataContext>(options =>
+            options.UseSqlServer(
+                configuration.GetConnectionString("Data")));
+            services.AddDbContext<AcceptedJobsContext>(options =>
+            options.UseSqlServer(
+                configuration.GetConnectionString("AcceptedJobs")));
             services.AddSingleton<IPostService, PostService>();
         }
     }
