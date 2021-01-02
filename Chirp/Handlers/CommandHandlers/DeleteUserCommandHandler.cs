@@ -11,7 +11,7 @@ namespace Chirp.Handlers.CommandHandlers
 {
     public class DeleteUserCommandHandler : INotificationHandler<DeleteUserCommand>
     {
-        public const string EventName = "UserDeleted";
+        public const string EventName = "DeleteUser";
 
         private const string Version = "1.0";
 
