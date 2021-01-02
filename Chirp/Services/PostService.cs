@@ -63,7 +63,7 @@ namespace Chirp.Services
 
         public async Task<Post> GetPostByIdAsync(Guid id)
         {
-            return await _context.Posts.SingleOrDefaultAsync(x => x.Id == id);
+            return await _context.Posts.Include(x => x.Tags).SingleOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<IList<Post>> GetPostsAsync(GetAllPostsFilter filter = null, PaginationFilter paginationFilter = null)
@@ -104,11 +104,13 @@ namespace Chirp.Services
             return updated > 0;
         }
 
-        public async Task<bool> UserOwnsPost(Guid postId, string userId)
+        public async Task<(bool Success, bool PostFound, bool UserOwnsPost)> UserOwnsPost(Guid postId, string userId)
         {
             var post = await _context.Posts.AsNoTracking().SingleOrDefaultAsync(x => x.Id == postId);
-
-            return post?.UserId == userId;
+            var postFound = post != null;
+            var userOwnsPost = post?.UserId == userId;
+            var success = postFound && userOwnsPost;
+            return (success, postFound, userOwnsPost);
         }
 
         private static IQueryable<Post> AddFiltersOnQuery(GetAllPostsFilter filter, IQueryable<Post> queryable)

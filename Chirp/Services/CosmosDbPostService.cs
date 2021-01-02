@@ -78,16 +78,6 @@ namespace Chirp.Services
             return true;
         }
 
-        public async Task<bool> UserOwnsPost(Guid id, string userId)
-        {
-            var post = await GetPostByIdAsync(id);
-
-            if (post?.UserId == userId)
-                return true;
-
-            return false;
-        }
-
         public Task<IEnumerable<Tag>> GetAllTagsAsync()
         {
             throw new NotImplementedException();
@@ -111,6 +101,19 @@ namespace Chirp.Services
         public Task<bool> UpdateTagAsync(Tag tag)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<(bool Success, bool PostFound, bool UserOwnsPost)> UserOwnsPost(Guid id, string userId)
+        {
+            var post = await GetPostByIdAsync(id);
+
+            var postFound = post != null;
+
+            var userOwnsPost = post?.UserId == userId;
+
+            var success = postFound && userOwnsPost;
+
+            return (success, postFound, userOwnsPost);
         }
     }
 }
