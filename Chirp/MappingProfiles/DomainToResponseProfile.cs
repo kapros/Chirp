@@ -14,7 +14,7 @@ namespace Chirp.MappingProfiles
         {
             CreateMap<Tag, TagResponse>();
             CreateMap<Post, PostResponse>()
-                .ForMember(post => post.Tags, opt => opt.MapFrom(src => src.Tags.Select(x => new TagResponse { Name = x.TagName })));
+                .ForMember(post => post.Tags, opt => opt.MapFrom(src => src.Tags.Select(x => new TagResponse { Id = x.Id })));
 
         }
     }

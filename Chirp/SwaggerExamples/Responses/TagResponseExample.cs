@@ -13,6 +13,7 @@ namespace Chirp.SwaggerExamples.Responses
         {
             return new TagResponse
             {
+                Id = 123,
                 Name = "some tag"
             };
         }
