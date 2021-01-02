@@ -21,6 +21,8 @@ namespace Chirp.Domain
         [Column("ResourceId")]
         public object CreatedObjectId { get; set; }
 
+        public Guid UserId { get; set; }
+
         public string Payload { get; set; }
 
         public bool IsFinished() => DateFinished != null && CreatedObjectId != null;
