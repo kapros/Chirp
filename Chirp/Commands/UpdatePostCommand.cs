@@ -9,14 +9,13 @@ using System.Threading.Tasks;
 
 namespace Chirp.Commands
 {
-    public class CreatePostCommand : Command, IRequest<Accepted>
+    public class UpdatePostCommand : Command, IRequest<Accepted>
     {
-        public CreatePostCommand(UserId userId) : base(userId)
+        public UpdatePostCommand(UserId userId) : base(userId)
         {
         }
 
-        public CreatePostRequest CreatePostRequest { get; set; }
-
-        public string CreatedBy { get; set; }
+        public Guid PostId { get; set; }
+        public UpdatePostRequest Update { get; set; }
     }
 }
