@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace Chirp.Services
 {
-    public class AzureServiceBusEventSender : IEventClient
+    public class AzureServiceBusEventService : IEventClient
     {
         private readonly TopicClient _client;
 
-        public AzureServiceBusEventSender(TopicClient client)
+        public AzureServiceBusEventService(TopicClient client)
         {
             _client = client;
         }
