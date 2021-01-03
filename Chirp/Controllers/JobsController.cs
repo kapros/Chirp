@@ -23,11 +23,12 @@ namespace Chirp.Controllers
             _userId = userId;
         }
 
+        [HttpGet("id")]
         public async Task<IActionResult> Get([FromRoute] string jobId)
         {
             var job = await _acceptedJobsContext.Jobs.FirstOrDefaultAsync(x => x.JobId == jobId);
             if (job.UserId != _userId.Id)
-                return Unauthorized(new { Error = "You may not view this job" });
+                return Unauthorized(new { Status = "Error", Error = "You may not view this job" });
             if (!job.DateFinished.HasValue)
                 return Ok(new { Status = "Pending" });
             return Ok(new
