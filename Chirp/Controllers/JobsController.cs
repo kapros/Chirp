@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Chirp.Data;
 using Chirp.Domain;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +14,8 @@ namespace Chirp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Produces("application/json")]
     public class JobsController : ControllerBase
     {
         private readonly AcceptedJobsContext _acceptedJobsContext;
@@ -23,7 +27,7 @@ namespace Chirp.Controllers
             _userId = userId;
         }
 
-        [HttpGet("id")]
+        [HttpGet("jobId")]
         public async Task<IActionResult> Get([FromRoute] string jobId)
         {
             var job = await _acceptedJobsContext.Jobs.FirstOrDefaultAsync(x => x.JobId == jobId);
@@ -36,6 +40,14 @@ namespace Chirp.Controllers
                 Status = "Finished",
                 ResourceId = job.CreatedObjectId
             });
+        }
+
+        [HttpGet("admin/{jobId}")]
+        [Authorize(Roles = "Admin", Policy = "MustWorkForMe")]
+        public async Task<IActionResult> AdminGet([FromRoute] string jobId)
+        {
+            var job = await _acceptedJobsContext.Jobs.FirstOrDefaultAsync(x => x.JobId == jobId);
+            return Ok(job);
         }
     }
 }
