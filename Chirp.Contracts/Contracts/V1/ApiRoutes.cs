@@ -29,7 +29,7 @@
         {
             public const string TagsRoot = Root + "/tags";
 
-            public const string WithName = TagsRoot + "/{tagName}/";
+            public const string WithName = TagsRoot + "/{tagName}";
 
             public const string GetByName = WithName;
 
@@ -47,6 +47,13 @@
             public const string Refresh = Base + "/identity/refresh";
 
             public const string Delete = Base + "/identity/delete";
+        }
+
+        public static class Jobs
+        {
+            public const string Get = Base + "/jobs/{jobId}";
+
+            public const string AdminGet = Base + "/admin/{jobId}";
         }
     }
 }
