@@ -30,6 +30,7 @@ namespace Chirp.Setup
                 configuration.GetConnectionString("AcceptedJobs")));
 
             services.AddSingleton<IPostService, PostService>();
+            services.AddSingleton<ITagsService, TagsService>();
         }
     }
 }
