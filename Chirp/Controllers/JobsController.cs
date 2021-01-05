@@ -28,7 +28,7 @@ namespace Chirp.Controllers
         {
             var job = await _acceptedJobsContext.Jobs.FirstOrDefaultAsync(x => x.JobId == jobId);
             if (job.UserId != _userId.Id)
-                return Unauthorized(new { Status = "Error", Error = "You may not view this job" });
+                return Unauthorized(new { Status = "Unauthorized", Error = "You may not view this job" });
             if (!job.DateFinished.HasValue)
                 return Ok(new { Status = "Pending" });
             return Ok(new
