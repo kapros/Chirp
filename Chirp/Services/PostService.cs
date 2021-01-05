@@ -24,13 +24,6 @@ namespace Chirp.Services
             return created > 0;
         }
 
-        public async Task<bool> CreateTagAsync(Tag tag)
-        {
-            await _context.Tags.AddAsync(tag);
-            var created = await _context.SaveChangesAsync();
-            return created > 0;
-        }
-
         public async Task<bool> DeletePostAsync(Guid id)
         {
             var post = await GetPostByIdAsync(id);
@@ -42,23 +35,11 @@ namespace Chirp.Services
             var deleted = await _context.SaveChangesAsync();
             return deleted > 0;
         }
-
-        public async Task<bool> DeleteTagAsync(string name)
+        public async Task<bool> UpdatePostAsync(Post postToupdate)
         {
-            var tag = await GetTagByNameAsync(name);
-
-            if (tag == null)
-                return false;
-
-            _context.Tags.Remove(tag);
-            var deleted = await _context.SaveChangesAsync();
-            return deleted > 0;
-        }
-
-        public async Task<IEnumerable<Tag>> GetAllTagsAsync()
-        {
-            var tags = await _context.Tags.ToListAsync();
-            return tags;
+            _context.Posts.Update(postToupdate);
+            var updated = await _context.SaveChangesAsync();
+            return updated > 0;
         }
 
         public async Task<Post> GetPostByIdAsync(Guid id)
@@ -83,27 +64,6 @@ namespace Chirp.Services
                 .Take(paginationFilter.PageSize)
                 .ToListAsync();
         }
-
-        public async Task<Tag> GetTagByNameAsync(string name)
-        {
-            var tag = await _context.Tags.FirstOrDefaultAsync(x => x.Name == name);
-            return tag;
-        }
-
-        public async Task<bool> UpdatePostAsync(Post postToupdate)
-        {
-            _context.Posts.Update(postToupdate);
-            var updated = await _context.SaveChangesAsync();
-            return updated > 0;
-        }
-
-        public async Task<bool> UpdateTagAsync(Tag tagToUpdate)
-        {
-            _context.Tags.Update(tagToUpdate);
-            var updated = await _context.SaveChangesAsync();
-            return updated > 0;
-        }
-
         public async Task<(bool Success, bool PostFound, bool UserOwnsPost)> UserOwnsPost(Guid postId, string userId)
         {
             var post = await _context.Posts.AsNoTracking().SingleOrDefaultAsync(x => x.Id == postId);

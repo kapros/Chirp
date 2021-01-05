@@ -25,12 +25,14 @@ namespace Chirp.Controllers.V1
     public class TagsController : ControllerBase
     {
         private readonly IPostService _postService;
+        private readonly ITagsService _tagsService;
         private readonly IMapper _mapper;
         private readonly IUriService _uriService;
 
-        public TagsController(IPostService postService, IMapper mapper, IUriService uriService)
+        public TagsController(IPostService postService, ITagsService tagsService, IMapper mapper, IUriService uriService)
         {
             _postService = postService;
+            _tagsService = tagsService;
             _mapper = mapper;
             _uriService = uriService;
         }
@@ -41,7 +43,7 @@ namespace Chirp.Controllers.V1
         {
             var pagination = _mapper.Map<PaginationFilter>(paginationQuery);
 
-            var tags = await _postService.GetAllTagsAsync();
+            var tags = await _tagsService.GetAllTagsAsync();
             var tagsResponses = _mapper.Map<List<TagResponse>>(tags);
 
             if (pagination == null || pagination.PageNumber < 1 || pagination.PageSize < 1)
@@ -55,7 +57,7 @@ namespace Chirp.Controllers.V1
         [HttpGet(ApiRoutes.Tags.GetByName)]
         public async Task<IActionResult> GetByName([FromRoute] string name)
         {
-            var tag = await _postService.GetTagByNameAsync(name);
+            var tag = await _tagsService.GetTagByNameAsync(name);
 
             if (tag == null)
                 return NotFound();
@@ -79,7 +81,7 @@ namespace Chirp.Controllers.V1
                 CreatedOn = DateTime.UtcNow
             };
 
-            var created = await _postService.CreateTagAsync(newTag);
+            var created = await _tagsService.CreateTagAsync(newTag);
 
             if (!created)
                 return BadRequest(new ErrorResponse { Errors = new List<ErrorModel> { new ErrorModel { Message = "Failed to created tag" } } });
@@ -91,14 +93,14 @@ namespace Chirp.Controllers.V1
         [HttpPut(ApiRoutes.Tags.Put)]
         public async Task<IActionResult> Update([FromRoute] string name, UpdateTagRequest request)
         {
-            var tag = await _postService.GetTagByNameAsync(name);
+            var tag = await _tagsService.GetTagByNameAsync(name);
 
             if (tag == null)
                 return NotFound();
 
             tag.Name = request.NewName;
 
-            var updated = await _postService.UpdateTagAsync(tag);
+            var updated = await _tagsService.UpdateTagAsync(tag);
 
             if (updated)
                 return Ok(new Response<TagResponse>(_mapper.Map<TagResponse>(tag)));
@@ -111,7 +113,7 @@ namespace Chirp.Controllers.V1
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete([FromRoute] string tagName)
         {
-            var deleted = await _postService.DeleteTagAsync(tagName);
+            var deleted = await _tagsService.DeleteTagAsync(tagName);
 
             if (deleted)
                 return NoContent();

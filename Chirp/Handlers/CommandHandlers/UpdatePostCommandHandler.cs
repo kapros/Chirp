@@ -19,6 +19,7 @@ namespace Chirp.Handlers.CommandHandlers
         private const string EventName = "PostUpdate";
 
         private readonly IPostService _postService;
+        private readonly ITagsService _tagsService;
         private readonly IUriService _uriService;
         private readonly ISerializationService _serializationService;
         private readonly AcceptedJobsContext _acceptedJobsContext;
@@ -26,12 +27,14 @@ namespace Chirp.Handlers.CommandHandlers
 
         public UpdatePostCommandHandler(
             IPostService postService,
+            ITagsService tagsService,
             IUriService uriService,
             ISerializationService serializationService,
             AcceptedJobsContext acceptedJobsContext,
             IEventPublishingService eventPublishingService)
         {
             _postService = postService;
+            _tagsService = tagsService;
             _uriService = uriService;
             _serializationService = serializationService;
             _acceptedJobsContext = acceptedJobsContext;
@@ -44,7 +47,7 @@ namespace Chirp.Handlers.CommandHandlers
             var dateStarted = DateTime.UtcNow;
             post.Name = request.Update.Name;
             var tags = request.Update.Tags
-                .Select(async x => await _postService.GetTagByNameAsync(x))
+                .Select(async x => await _tagsService.GetTagByNameAsync(x))
                 .Select(x => x.Result)
                 .Select(x => new PostTag { Id = x.Id, PostId = post.Id })
                 .ToList();

@@ -18,10 +18,5 @@ namespace Chirp.Services
 
         Task<bool> CreatePostAsync(Post post);
         Task<(bool Success, bool PostFound, bool UserOwnsPost)> UserOwnsPost(Guid id, string v);
-        Task<IEnumerable<Tag>> GetAllTagsAsync();
-        Task<Tag> GetTagByNameAsync(string name);
-        Task<bool> CreateTagAsync(Tag newTag);
-        Task<bool> DeleteTagAsync(string tagName);
-        Task<bool> UpdateTagAsync(Tag tag);
     }
 }
