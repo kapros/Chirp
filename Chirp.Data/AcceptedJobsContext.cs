@@ -1,5 +1,4 @@
-﻿using Chirp.Contracts.V1.Responses;
-using Chirp.Domain;
+﻿using Chirp.Domain;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

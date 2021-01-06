@@ -20,6 +20,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chirp.Contracts", "Chirp.Co
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chirp.Domain", "Chirp.Domain\Chirp.Domain.csproj", "{13116A96-A96B-491B-97AE-04D7E1FEA1D9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PostsEventProcessor", "PostsEventProcessor\PostsEventProcessor.csproj", "{3C7784FF-D933-4BD6-A740-144B24397652}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chirp.Data", "Chirp.Data\Chirp.Data.csproj", "{6E4D8F9E-938E-4BAE-A5C5-D6826C93288C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +54,14 @@ Global
 		{13116A96-A96B-491B-97AE-04D7E1FEA1D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{13116A96-A96B-491B-97AE-04D7E1FEA1D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{13116A96-A96B-491B-97AE-04D7E1FEA1D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C7784FF-D933-4BD6-A740-144B24397652}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C7784FF-D933-4BD6-A740-144B24397652}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C7784FF-D933-4BD6-A740-144B24397652}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C7784FF-D933-4BD6-A740-144B24397652}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E4D8F9E-938E-4BAE-A5C5-D6826C93288C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E4D8F9E-938E-4BAE-A5C5-D6826C93288C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E4D8F9E-938E-4BAE-A5C5-D6826C93288C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E4D8F9E-938E-4BAE-A5C5-D6826C93288C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
