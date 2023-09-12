@@ -48,7 +48,7 @@ namespace Chirp.IntegrationTests
             };
             var stringPayload = Newtonsoft.Json.JsonConvert.SerializeObject(request);
             var content = new StringContent(stringPayload, Encoding.UTF8, "application/json");
-            var response = await TestClient.PostAsync(ApiRoutes.Identity.Register, content);
+            var response = await TestClient.PostAsync(ApiRoutes.Identity.Login, content);
 
             var registrationResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<AuthSuccessResponse>(await response.Content.ReadAsStringAsync());
             return registrationResponse.Token;
@@ -58,7 +58,7 @@ namespace Chirp.IntegrationTests
         {
             var stringPayload = Newtonsoft.Json.JsonConvert.SerializeObject(request);
             var content = new StringContent(stringPayload, Encoding.UTF8, "application/json");
-            var response = await TestClient.PostAsync(ApiRoutes.Identity.Register, content);
+            var response = await TestClient.PostAsync(ApiRoutes.Posts.Create, content);
 
             return Newtonsoft.Json.JsonConvert.DeserializeObject<PostResponse>(await response.Content.ReadAsStringAsync());
         }
